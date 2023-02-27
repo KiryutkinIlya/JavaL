@@ -76,7 +76,7 @@ public class Form extends JDialog {
     }
     public static double InFunction(double x) //Подынтегральная функция
     {
-        return 1/(Math.log(x));
+        return Math.sin(x*x);
     }
     private void delete()
     {
