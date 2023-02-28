@@ -76,7 +76,7 @@ public class Form extends JDialog {
     }
     public static double InFunction(double x) //Подынтегральная функция
     {
-        return Math.sin(x*x);
+        return Math.sin(Math.pow(x,2));
     }
     private void delete()
     {
@@ -88,8 +88,8 @@ public class Form extends JDialog {
     }
     private void Calc() {
         dataT[0] =Double.valueOf(textField1.getText());
-        dataT[1] =Double.valueOf(textField3.getText());
-        dataT[2] =Double.valueOf(textField2.getText());
+        dataT[1] =Double.valueOf(textField2.getText());
+        dataT[2] =Double.valueOf(textField3.getText());
         dataT[3] =Double.valueOf("0");
         dataT[3]= Trap(dataT[0],dataT[1],dataT[2]);
         for(int i=0;i<4;i++)
@@ -118,20 +118,27 @@ public class Form extends JDialog {
     public void createTable(){
         int i=100;
 
-        data[num-1][0]=dataCount[0];//1
-        data[num-1][1]=dataCount[1];//2
-        data[num-1][2]=dataCount[2];//3
-        data[num-1][3]=dataCount[3];//4
+        data[num-1][0]=(double)dataCount[0];//1
+        data[num-1][1]=(double)dataCount[1];//2
+        data[num-1][2]=""+dataCount[2];//3
+        data[num-1][3]=(double)dataCount[3];//4
         table1.setModel(new DefaultTableModel(data, columnNames));
     }
     public double Trap(double a,double b, double h){
         double result=0;
-        int n = (int)((a-b)/h);
-        result += (InFunction(a)+InFunction(b))/2;
-        for(int i = 1; i < n; i++) {
-            result += InFunction(b + h * i);
+
+        for(double i=a;i<=b-(h*2);i+=h)
+        {
+       result=(InFunction(i)+InFunction(i+h))*(b-i)/2;
         }
-        return h*result;
+
+     //   double result=0;
+       // int n = (int)((a-b)/h);
+       // result += (InFunction(a)+InFunction(b))/2;
+        //for(int i = 1; i < n; i++) {
+          //  result += InFunction(b + h * i);
+       // }
+        return result;
     }
 
     private void onOK() {
