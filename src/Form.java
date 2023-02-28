@@ -85,6 +85,12 @@ public class Form extends JDialog {
         textField3.setText("");
         textField4.setText("");
         flagSave=false;
+        data[num-2][0]="";//1
+        data[num-2][1]="";//2
+        data[num-2][2]="";//3
+        data[num-2][3]="";//4
+        num--;
+        table1.setModel(new DefaultTableModel(data, columnNames));
     }
     private void Calc() {
         dataT[0] =Double.valueOf(textField1.getText());
