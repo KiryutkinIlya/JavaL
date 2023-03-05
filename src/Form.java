@@ -143,11 +143,11 @@ public class Form extends JDialog {
     {   flagSave=false;
         Object[][] dt=new Object[8][4];
         for(int i=0;i<8;i++)
-        {   dt[i][0]="";
-            dt[i][1]="";
-            dt[i][2]="";
-            dt[i][3]="";
-            dt[i][0]="";
+        {   dt[i][0]=null;
+            dt[i][1]=null;
+            dt[i][2]=null;
+            dt[i][3]=null;
+            dt[i][0]=data[i][0];
             dt[i][1]=data[i][1];
             dt[i][2]=data[i][2];
             dt[i][3]=data[i][3];
@@ -155,16 +155,18 @@ public class Form extends JDialog {
         }
         int j=0;
         for(int i=0;i<8;i++)
-        {
+        {   if(j==8){
+            break;
+        }
             if(realRow==i)
             {
                 j++;
-            };
-                data[i][0]=dt[j][0];
-                data[i][1]=dt[j][1];
-                data[i][2]=dt[j][2];
-                data[i][3]=dt[j][3];
-                j++;
+            }
+                data[i][0] = dt[j][0];
+                data[i][1] = dt[j][1];
+                data[i][2] = dt[j][2];
+                data[i][3] = dt[j][3];
+            j++;
         }
         num--;
         table1.setModel(new DefaultTableModel(data, columnNames));
