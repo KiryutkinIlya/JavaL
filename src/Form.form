@@ -71,23 +71,20 @@
                 <properties>
                   <autoCreateColumnsFromModel value="true"/>
                   <autoCreateRowSorter value="true"/>
-                  <cellSelectionEnabled value="false"/>
+                  <cellSelectionEnabled value="true"/>
                   <columnSelectionAllowed value="true"/>
+                  <rowSelectionAllowed value="true"/>
+                  <showHorizontalLines value="true"/>
+                  <showVerticalLines value="true"/>
                   <surrendersFocusOnKeystroke value="false"/>
+                  <updateSelectionOnSort value="false"/>
+                  <verifyInputWhenFocusTarget value="true"/>
                 </properties>
               </component>
             </children>
           </scrollpane>
         </children>
       </grid>
-      <component id="7e038" class="javax.swing.JTextField" binding="textField1" default-binding="true">
-        <constraints>
-          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="-1"/>
-          </grid>
-        </constraints>
-        <properties/>
-      </component>
       <component id="8db" class="javax.swing.JTextField" binding="textField2" default-binding="true">
         <constraints>
           <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
@@ -156,6 +153,24 @@
       <component id="ab433" class="javax.swing.JTextField" binding="textField4" default-binding="true">
         <constraints>
           <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="ff5d5" class="javax.swing.JButton" binding="buttonUp">
+        <constraints>
+          <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <actionCommand value="Button"/>
+          <label value="Вернуть"/>
+          <text value="Вернуть"/>
+        </properties>
+      </component>
+      <component id="7e038" class="javax.swing.JTextField" binding="textField1" default-binding="true">
+        <constraints>
+          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
