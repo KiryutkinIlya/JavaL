@@ -109,10 +109,10 @@ public class Form extends JDialog {
                         tableCursor[1]=(double)table1.getValueAt(realRow, 1);
                         tableCursor[2]=(double)table1.getValueAt(realRow, 2);
                         //tableCursor[3]=(double)table1.getValueAt(realRow, 3);
-                        System.out.println(tableCursor[0]);
-                        System.out.println(tableCursor[1]);
-                        System.out.println(tableCursor[2]);
-                        System.out.println(tableCursor[3]);
+                        //System.out.println(tableCursor[0]);
+                        //System.out.println(tableCursor[1]);
+                        //System.out.println(tableCursor[2]);
+                        // System.out.println(tableCursor[3]);
                         //номер строки из модели данных
                         //здесь должна быть выборка объекта из модели по номеру строки и его отображение
                     }
