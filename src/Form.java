@@ -18,11 +18,11 @@ public class Form extends JDialog {
     private JButton ButtonCalc;
     private JTextField textField4;
     private double[] dataT = new double[4];
-    private double[] dataCount = new double[4];
+    private Object[] dataCount = new Object[4];
     private double[] tableCursor=new double[4];
-
+    DefaultTableModel modelData = (DefaultTableModel) table1.getModel();
     private JButton buttonUp;
-    int num =0;
+    int num =1;
     int realRow;
     int realColumn;
     boolean flagSave=false;
@@ -38,10 +38,10 @@ public class Form extends JDialog {
         flagSave=false;
         //contentPane.add(table1);
         setContentPane(contentPane);
+        createTable();
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
-        table1.setModel(new DefaultTableModel(data, columnNames));
-        buttonOK.addActionListener(new ActionListener() {
+       buttonOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 onOK();
             }
@@ -140,44 +140,17 @@ public class Form extends JDialog {
         return Math.sin(Math.pow(x,2));
     }
     private void delete()
-    {   flagSave=false;
-        Object[][] dt=new Object[8][4];
-        for(int i=0;i<8;i++)
-        {   dt[i][0]=null;
-            dt[i][1]=null;
-            dt[i][2]=null;
-            dt[i][3]=null;
-            dt[i][0]=data[i][0];
-            dt[i][1]=data[i][1];
-            dt[i][2]=data[i][2];
-            dt[i][3]=data[i][3];
-
-        }
-        int j=0;
-        for(int i=0;i<8;i++)
-        {   if(j==8){
-            break;
-        }
-            if(realRow==i)
-            {
-                j++;
-            }
-                data[i][0] = dt[j][0];
-                data[i][1] = dt[j][1];
-                data[i][2] = dt[j][2];
-                data[i][3] = dt[j][3];
-            j++;
-        }
+    {
+        modelData.removeRow(realRow);
         num--;
-        table1.setModel(new DefaultTableModel(data, columnNames));
     }
     private void Calc() {
         flagSave=true;
-        data[realRow][0]= tableCursor[0];//1
-        data[realRow][1]=tableCursor[1];//2
-        data[realRow][2]=tableCursor[2];//3
-        data[realRow][3]=Trap(tableCursor[1],tableCursor[0],tableCursor[2]);//4
-        table1.setModel(new DefaultTableModel(data, columnNames));
+        tableCursor[0]=(double)modelData.getValueAt(realRow,0);
+        tableCursor[1]=(double)modelData.getValueAt(realRow,1);
+        tableCursor[2]=(double)modelData.getValueAt(realRow,2);
+        tableCursor[3]=Trap(tableCursor[1],tableCursor[0],tableCursor[2]);
+        modelData.setValueAt(tableCursor[3],realRow,3);//4
 
     }
     private void CalcToField() {
@@ -187,22 +160,15 @@ public class Form extends JDialog {
         dataCount[0] =Double.valueOf(textField2.getText());
         dataCount[1] =Double.valueOf(textField1.getText());
         dataCount[2] =Double.valueOf(textField3.getText());
+        dataCount[3] ="";
         if(!String.valueOf(textField4.getText()).equals(""))
         {
             dataCount[3] =Double.valueOf(textField4.getText());
-            data[num][0]=dataCount[0];//1
-            data[num][1]=dataCount[1];//2
-            data[num][2]=dataCount[2];//3
-            data[num][3]=dataCount[3];//4
-            table1.setModel(new DefaultTableModel(data, columnNames));
-        }else{
-            data[num][0]=dataCount[0];//1
-            data[num][1]=dataCount[1];//2
-            data[num][2]=dataCount[2];//3
-            table1.setModel(new DefaultTableModel(data, columnNames));
-        }
+            modelData.addRow(dataCount);
 
-        //createTable();
+        }else{
+            modelData.addRow(dataCount);
+        }
         num++;
         textField1.setText("");
         textField2.setText("");
@@ -211,11 +177,11 @@ public class Form extends JDialog {
     }
 
     public void createTable(){
-        data[num][0]=dataCount[0];//1
-        data[num][1]=dataCount[1];//2
-        data[num][2]=dataCount[2];//3
-        data[num][3]=dataCount[3];//4
-        table1.setModel(new DefaultTableModel(data, columnNames));
+        modelData.addColumn("Верхняя граница");
+        modelData.addColumn("Нижняя граница");
+        modelData.addColumn("Шаг");
+        modelData.addColumn("Результат");
+
     }
     public double Trap(double a,double b, double h){
         double result=0;
