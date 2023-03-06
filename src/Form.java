@@ -51,7 +51,11 @@ public class Form extends JDialog {
         ButtonAdd.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 flagPoint=false;
-                AddTable();
+                try {
+                    AddTable();
+                } catch (InException ex) {
+                    throw new RuntimeException(ex);
+                }
 
             }
         });
@@ -68,11 +72,17 @@ public class Form extends JDialog {
         //вычисление
         ButtonCalc.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(flagPoint) {
-                    Calc();
-                }else{
-                    CalcToField();
-                }
+
+                    if (flagPoint) {
+                        try {
+                            Calc();
+                        } catch (InException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    } else {
+                        CalcToField();
+                    }
+
                 flagPoint=false;
                 }
         });
@@ -140,11 +150,17 @@ public class Form extends JDialog {
         dataNumbers.remove(realRow);
         num--;
     }
-    private void Calc() {
+    private void Calc() throws InException {
         flagSave=true;
-        tableCursor[0]=(double)modelData.getValueAt(realRow,0);
-        tableCursor[1]=(double)modelData.getValueAt(realRow,1);
-        tableCursor[2]=(double)modelData.getValueAt(realRow,2);
+        try {
+            tableCursor[0] = (double) modelData.getValueAt(realRow, 0);
+            tableCursor[1] = (double) modelData.getValueAt(realRow, 1);
+            tableCursor[2] = (double) modelData.getValueAt(realRow, 2);
+        }catch (NullPointerException ex)
+        {
+            throw new InException();
+        }
+
         tableCursor[3]=Trap(tableCursor[1],tableCursor[0],tableCursor[2]);
         modelData.setValueAt(tableCursor[3],realRow,3);//4
 
@@ -152,11 +168,16 @@ public class Form extends JDialog {
     private void CalcToField() {
         textField4.setText(""+Trap(Double.valueOf(textField1.getText()),Double.valueOf(textField2.getText()),Double.valueOf(textField3.getText())));
     }
-    private void AddTable() {
+    private void AddTable() throws InException {
+        try{
         dataNumber.setMin(Double.valueOf(textField2.getText()));
         dataNumber.setMax(Double.valueOf(textField1.getText()));
         dataNumber.setStep(Double.valueOf(textField3.getText()));
         dataNumber.setResult(0);
+        }catch (NullPointerException ex)
+        {
+            throw new InException();
+        }
         if(!String.valueOf(textField4.getText()).equals(""))
         {
             dataNumber.setResult(Double.valueOf(textField4.getText()));
