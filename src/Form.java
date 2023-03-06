@@ -17,23 +17,18 @@ public class Form extends JDialog {
     private JButton ButtonDelete;
     private JButton ButtonCalc;
     private JTextField textField4;
-    private double[] dataT = new double[4];
-    private Object[] dataCount = new Object[4];
     private double[] tableCursor=new double[4];
+    private DataNumber dataNumber=new DataNumber();
+    private ArrayList<DataNumber> dataNumbers=new ArrayList();
+
     DefaultTableModel modelData = (DefaultTableModel) table1.getModel();
     private JButton buttonUp;
-    int num =1;
+    int num =0;
     int realRow;
     int realColumn;
     boolean flagSave=false;
     boolean flagPoint=false;
-    String[] columnNames = {
-            "Верхняя граница интегрирования",
-            "Нижняя граница интегрирования",
-            "Шаг интегрирования",
-            "Результат"
-    };
-    Object[][] data = new Object[8][4];
+
     public Form() {
         flagSave=false;
         //contentPane.add(table1);
@@ -142,6 +137,7 @@ public class Form extends JDialog {
     private void delete()
     {
         modelData.removeRow(realRow);
+        dataNumbers.remove(realRow);
         num--;
     }
     private void Calc() {
@@ -157,17 +153,19 @@ public class Form extends JDialog {
         textField4.setText(""+Trap(Double.valueOf(textField1.getText()),Double.valueOf(textField2.getText()),Double.valueOf(textField3.getText())));
     }
     private void AddTable() {
-        dataCount[0] =Double.valueOf(textField2.getText());
-        dataCount[1] =Double.valueOf(textField1.getText());
-        dataCount[2] =Double.valueOf(textField3.getText());
-        dataCount[3] ="";
+        dataNumber.setMin(Double.valueOf(textField2.getText()));
+        dataNumber.setMax(Double.valueOf(textField1.getText()));
+        dataNumber.setStep(Double.valueOf(textField3.getText()));
+        dataNumber.setResult(0);
         if(!String.valueOf(textField4.getText()).equals(""))
         {
-            dataCount[3] =Double.valueOf(textField4.getText());
-            modelData.addRow(dataCount);
+            dataNumber.setResult(Double.valueOf(textField4.getText()));
+            dataNumbers.add(dataNumber);
+            modelData.addRow(dataNumbers.get(num).addMod());
 
         }else{
-            modelData.addRow(dataCount);
+            dataNumbers.add(dataNumber);
+            modelData.addRow(dataNumbers.get(num).addMod());
         }
         num++;
         textField1.setText("");
