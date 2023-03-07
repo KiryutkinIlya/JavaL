@@ -1,9 +1,7 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Form extends JDialog {
     private JPanel contentPane;
@@ -23,6 +21,10 @@ public class Form extends JDialog {
 
     DefaultTableModel modelData = (DefaultTableModel) table1.getModel();
     private JButton buttonUp;
+    private JButton btnCleanTable;
+    private JButton buttonFromCollection;
+    private JCheckBox CheckBoxTrap;
+    private JCheckBox CheckBoxSimpson;
     int num =0;
     int realRow;
     int realColumn;
@@ -76,6 +78,12 @@ public class Form extends JDialog {
                 flagPoint=false;
                 }
         });
+        buttonFromCollection.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+             for(int i=0;i<num;i++) {
+                 modelData.addRow(dataNumbers.get(i).addMod());
+             }
+            }});
         //вернуть
         buttonUp.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -86,6 +94,11 @@ public class Form extends JDialog {
                     //textField4.setText("" + tableCursor[3]);
                 }
                 flagPoint=false;
+            }
+        });
+        btnCleanTable.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            modelData.setRowCount(0);
             }
         });
         table1.addMouseListener(new MouseAdapter() {
@@ -130,10 +143,7 @@ public class Form extends JDialog {
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
     }
-    public static double InFunction(double x) //Подынтегральная функция
-    {
-        return Math.sin(Math.pow(x,2));
-    }
+
     private void delete()
     {
         modelData.removeRow(realRow);
@@ -153,27 +163,39 @@ public class Form extends JDialog {
         textField4.setText(""+Trap(Double.valueOf(textField1.getText()),Double.valueOf(textField2.getText()),Double.valueOf(textField3.getText())));
     }
     private void AddTable() {
-        dataNumber.setMin(Double.valueOf(textField2.getText()));
-        dataNumber.setMax(Double.valueOf(textField1.getText()));
-        dataNumber.setStep(Double.valueOf(textField3.getText()));
-        dataNumber.setResult(0);
-        if(!String.valueOf(textField4.getText()).equals(""))
-        {
-            dataNumber.setResult(Double.valueOf(textField4.getText()));
-            dataNumbers.add(dataNumber);
-            modelData.addRow(dataNumbers.get(num).addMod());
-
-        }else{
-            dataNumbers.add(dataNumber);
-            modelData.addRow(dataNumbers.get(num).addMod());
-        }
+        dataNumber.setAllField(Double.valueOf(textField1.getText()),Double.valueOf(textField2.getText()),Double.valueOf(textField3.getText()));
+        dataNumbers.add(dataNumber);
+        modelData.addRow(dataNumbers.get(num).addMod());
         num++;
         textField1.setText("");
         textField2.setText("");
         textField3.setText("");
         textField4.setText("");
     }
-
+    public double Trap(double a,double b, double h){
+        double result=0;
+        double num=0;
+        for(double i=a;i<=b-(h*2);i+=h)
+        {num=i+h;
+            if(i>b)
+            {
+                num=b;
+            }
+            result+=(InFunction(i)+InFunction(num))*(b-i)/2;
+        }
+        //double result=0;
+        // int n = (int)((a-b)/h);
+        //result += (InFunction(a)+InFunction(b))/2;
+        //for(int i = 1; i < n; i++) {
+        //    result += InFunction(b + h * i);
+        //}
+        //}
+        return result;
+    }
+    public static double InFunction(double x) //Подынтегральная функция
+    {
+        return Math.sin(Math.pow(x,2));
+    }
     public void createTable(){
         modelData.addColumn("Верхняя граница");
         modelData.addColumn("Нижняя граница");
@@ -181,22 +203,7 @@ public class Form extends JDialog {
         modelData.addColumn("Результат");
 
     }
-    public double Trap(double a,double b, double h){
-        double result=0;
 
-        for(double i=a;i<=b-(h*2);i+=h)
-        {
-       result=(InFunction(i)+InFunction(i+h))*(b-i)/2;
-        }
-
-     //   double result=0;
-       // int n = (int)((a-b)/h);
-       // result += (InFunction(a)+InFunction(b))/2;
-        //for(int i = 1; i < n; i++) {
-          //  result += InFunction(b + h * i);
-       // }
-        return result;
-    }
 
     private void onOK() {
         // add your code here

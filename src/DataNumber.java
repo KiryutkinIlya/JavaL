@@ -17,10 +17,11 @@ public class DataNumber {
         Result = 0;
     }
     public DataNumber(double[] temp) {
+
         Min = temp[0];
         Max = temp[1];
         Step = temp[2];
-        Result = temp[3];
+        Result = Trap(temp[0],temp[1],temp[2]);
     }
     public double getMin() {
         return Min;
@@ -49,9 +50,25 @@ public class DataNumber {
     public void setStep(double step) {
         Step = step;
     }
+   public void setAllField(double a, double b,double step)
+   {
+       Min = a;
+       Max = b;
+       Step = step;
+       if(Min>Max)
+       {
+           setResultNull();
+       }else {
+           setResult();
+       }
+   }
+    public void setResult() {
 
-    public void setResult(double result) {
-        Result = result;
+        Result =  Trap(Min,Max,Step);
+    }
+    public void setResultNull() {
+
+        Result =  0;
     }
 
     public Object[] addMod() {
@@ -62,7 +79,30 @@ public class DataNumber {
         temp[3]=Result;
         return temp;
     }
-
+    public double Trap(double a,double b, double h){
+        double result=0;
+        double num=0;
+        for(double i=a;i<=b-(h*2);i+=h)
+        {num=i+h;
+            if(i>b)
+            {
+                num=b;
+            }
+            result+=(InFunction(i)+InFunction(num))*(b-i)/2;
+        }
+        //double result=0;
+        // int n = (int)((a-b)/h);
+        //result += (InFunction(a)+InFunction(b))/2;
+        //for(int i = 1; i < n; i++) {
+        //    result += InFunction(b + h * i);
+        //}
+        //}
+        return result;
+    }
+    public static double InFunction(double x) //Подынтегральная функция
+    {
+        return Math.sin(Math.pow(x,2));
+    }
     @Override
     public String toString() {
         return "DataNumber{" +
