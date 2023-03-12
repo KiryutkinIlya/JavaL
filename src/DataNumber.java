@@ -3,18 +3,29 @@ public class DataNumber {
     private double Max;
     private double Step;
     private double Result;
-
+    private String Method;
+    private static String Simpson="метод Cимпcона";
+    private static String Trap="метод Трапеции";
     public DataNumber(double min, double max, double step, double result) {
         Min = min;
         Max = max;
         Step = step;
         Result = result;
+        Method="";
     }
     public DataNumber() {
         Min = 0;
         Max = 0;
         Step = 0;
         Result = 0;
+        Method="";
+    }
+    public DataNumber(DataNumber dataNumber) {
+        this.Min = dataNumber.Min;
+        this.Max = dataNumber.Max;
+        this.Step = dataNumber.Step;
+        this.Result =dataNumber.Result;
+        this.Method= dataNumber.Method;
     }
     public DataNumber(double[] temp) {
 
@@ -22,6 +33,8 @@ public class DataNumber {
         Max = temp[1];
         Step = temp[2];
         Result = Trap(temp[0],temp[1],temp[2]);
+        Method=Trap;
+
     }
     public double getMin() {
         return Min;
@@ -50,7 +63,7 @@ public class DataNumber {
     public void setStep(double step) {
         Step = step;
     }
-   public void setAllField(double a, double b,double step)
+   public void setAllFieldTrap(double a, double b,double step)
    {
        Min = a;
        Max = b;
@@ -59,24 +72,89 @@ public class DataNumber {
        {
            setResultNull();
        }else {
-           setResult();
+           setResultTrap();
        }
    }
-    public void setResult() {
+    public void setAllField(double a, double b,double step,int method)
+    {
+        Min = a;
+        Max = b;
+        Step = step;
+        if(Min>Max)
+        {
+            setResultNull();
+        }else {
+        if(method==0)
+        {
+            setResultTrap();
+            Method=Trap;
+        } else{ if(method==1) {
+            setResultSimpson();
+            Method=Simpson;
+        }else{
+            setResultNull();
+            Method="";
+        }}
+        }
+    }
+    public static String getSimpson() {
+        return Simpson;
+    }
+
+    public static void setSimpson(String simpson) {
+        Simpson = simpson;
+    }
+
+    public static String getTrap() {
+        return Trap;
+    }
+
+    public static void setTrap(String trap) {
+        Trap = trap;
+    }
+
+    public void setAllFieldSimpson(double a, double b, double step)
+    {
+        Min = a;
+        Max = b;
+        Step = step;
+        if(Min>Max)
+        {
+            setResultNull();
+        }else {
+            setResultSimpson();
+        }
+    }
+
+    public void setResultTrap() {
 
         Result =  Trap(Min,Max,Step);
     }
-    public void setResultNull() {
 
+    public void setResultSimpson()
+    {
+        Result=Simpson(Min,Max,Step);
+    }
+    public void setResultNull() {
         Result =  0;
     }
 
-    public Object[] addMod() {
-        Object[] temp=new Object[4];
+    public Object[] addModSimpson() {
+        Object[] temp=new Object[5];
         temp[0]=Min;
         temp[1]=Max;
         temp[2]=Step;
         temp[3]=Result;
+        temp[4]=Simpson;
+        return temp;
+    }
+    public Object[] addMod() {
+        Object[] temp=new Object[5];
+        temp[0]=Min;
+        temp[1]=Max;
+        temp[2]=Step;
+        temp[3]=Result;
+        temp[4]=Method;
         return temp;
     }
     public double Trap(double a,double b, double h){
@@ -98,6 +176,21 @@ public class DataNumber {
         //}
         //}
         return result;
+    }
+    public double Simpson(double a,double b, double n){
+        int i,z;
+        double h,s;
+
+        n=n+n;
+        s = InFunction(a)*InFunction(b);
+        h = (b-a)/n;
+        z = 4;
+
+        for(i = 1; i<n; i++){
+            s = s + z * InFunction(a+i*h);
+            z = 6 - z;
+        }
+        return (s * h)/3;
     }
     public static double InFunction(double x) //Подынтегральная функция
     {
