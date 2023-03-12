@@ -83,10 +83,15 @@ public class Form extends JDialog {
         //добавление в таблицу
         ButtonAdd.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                try {
                 if(checkSelMetods()) {
                     flagPoint = false;
                     AddTable();
                 };
+                }catch (InExceptions ex)
+                {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         //удаление
@@ -103,13 +108,19 @@ public class Form extends JDialog {
         //вычисление
         ButtonCalc.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
-                if(checkSelMetods()) {
-                if(flagPoint) {
-                    Calc();
-                }else{
-                    CalcToField();
-                }};
+                try {
+                    if (checkSelMetods()) {
+                        if (flagPoint) {
+                            Calc();
+                        } else {
+                            CalcToField();
+                        }
+                    }
+                    ;
+                }catch (InExceptions ex)
+                {
+                    throw new RuntimeException(ex);
+                }
                 flagPoint=false;
                 }
         });
@@ -195,7 +206,7 @@ public class Form extends JDialog {
         dataNumbers.remove(realRow);
         num--;
     }
-    private void Calc() {
+    private void Calc() throws InExceptions {
         flagSave=true;
         tableCursor[0]=(double)modelData.getValueAt(realRow,0);
         tableCursor[1]=(double)modelData.getValueAt(realRow,1);
@@ -214,7 +225,7 @@ public class Form extends JDialog {
         modelData.setValueAt(tableCursor[3],realRow,3);//4
 
     }
-    private void CalcToField() {
+    private void CalcToField()throws InExceptions  {
         if(flagSimpson==true){
             textField4.setText(""+Simpson(Double.valueOf(textField1.getText()),Double.valueOf(textField2.getText()),Double.valueOf(textField3.getText())));
         }else{
@@ -227,8 +238,12 @@ public class Form extends JDialog {
         }
 
     }
-    private void AddTable() {
+    private void AddTable() throws InExceptions {
         DataNumber dataNumber=new DataNumber();
+        if(textField1.getText().equals(""))
+        {
+            throw new InExceptions();
+        }
         dataNumber.setAllField(Double.valueOf(textField1.getText()),Double.valueOf(textField2.getText()),Double.valueOf(textField3.getText()),NumberMethod());
         dataNumbers.add(dataNumber);
         modelData.addRow(dataNumbers.get(num).addMod());
