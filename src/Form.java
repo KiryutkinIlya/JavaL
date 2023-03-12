@@ -372,19 +372,18 @@ public class Form extends JDialog {
         menuBar.add(fileMenu);
         setJMenuBar(menuBar);
 
-        saveBinMenuItem.addActionListener(new ActionListener() {    ///////////////////// сохранить бинарный файл
+        saveBinMenuItem.addActionListener(new ActionListener() {  
             public void actionPerformed(ActionEvent e) {
                 FileNameExtensionFilter filter = new FileNameExtensionFilter("Data List Object Type", "dlot");
                 chooser.setFileFilter(filter);
                 int choice = chooser.showSaveDialog(chooser);
                 //if (choice != JFileChooser.APPROVE_OPTION) return;
                 chosenFile = chooser.getSelectedFile();
-
-                savebinFile();
+                saveBinFile();
 
             }
         });
-        openBinMenuItem.addActionListener(new ActionListener() {   ///////////////////// открыть бинарный файл
+        openBinMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 FileNameExtensionFilter filter = new FileNameExtensionFilter("Data List Object Type", "dlot");
                 chooser.setFileFilter(filter);
@@ -392,11 +391,9 @@ public class Form extends JDialog {
                 if (choice != JFileChooser.APPROVE_OPTION) return;
                 chosenFile = chooser.getSelectedFile();
                 loadbinFile();
-
-
             }
         });
-        saveMenuItem.addActionListener(new ActionListener() {    ///////////////////// сохранить  файл
+        saveMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int choice = chooser.showSaveDialog(chooser);
                 //if (choice != JFileChooser.APPROVE_OPTION) return;
@@ -409,7 +406,7 @@ public class Form extends JDialog {
 
             }
         });
-        saveMenuItemInF.addActionListener(new ActionListener() {    ///////////////////// сохранить  файл
+        saveMenuItemInF.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int choice = chooser.showSaveDialog(chooser);
                 //if (choice != JFileChooser.APPROVE_OPTION) return;
@@ -422,7 +419,7 @@ public class Form extends JDialog {
 
             }
         });
-        openMenuItem.addActionListener(new ActionListener() {    ///////////////////// сохранить  файл
+        openMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 FileNameExtensionFilter filter = new FileNameExtensionFilter("text", "txt");
                 chooser.setFileFilter(filter);
@@ -438,11 +435,11 @@ public class Form extends JDialog {
                 }
             }
         });
-    } public void savebinFile(){
+    } public void saveBinFile(){
 
         try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(chosenFile)))
         {
-       //     oos.writeObject(dataListObject);
+            oos.writeObject(dataNumbers);
             System.out.println("File has been written");
         }
         catch(Exception ex){
@@ -453,17 +450,14 @@ public class Form extends JDialog {
 
     }
     public void loadbinFile() {
-
         try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream(chosenFile)))
         {
-
-         //   dataListObject=((ArrayList<DataNumber>)ois.readObject());
+           dataNumbers=((ArrayList<DataNumber>)ois.readObject());
         }
         catch(Exception ex){
-
             System.out.println(ex.getMessage());
         }
-     //   заполнитьButton();
+        AddInCollection();
     }
     public void saveFile() throws IOException {
         int countData = dataNumbers.size();

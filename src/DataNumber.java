@@ -1,4 +1,6 @@
-public class DataNumber {
+import java.io.Serializable;
+
+public class DataNumber implements Serializable {
     private double Min;
     private double Max;
     private double Step;
