@@ -1,6 +1,8 @@
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
+import java.io.*;
 import java.util.ArrayList;
 
 import static javax.swing.JOptionPane.showMessageDialog;
@@ -17,15 +19,22 @@ public class Form extends JDialog {
     private JButton ButtonDelete;
     private JButton ButtonCalc;
     private JTextField textField4;
+    private JMenuBar menuBar;
+    private JMenu menu, submenu;
+    private JMenuItem menuItem;
+    private JRadioButtonMenuItem rbMenuItem;
+    private JCheckBoxMenuItem cbMenuItem;
     private double[] tableCursor=new double[4];
     private ArrayList<DataNumber> dataNumbers=new ArrayList();
-
+    private JFileChooser chooser= new JFileChooser();
+    private File chosenFile;
     DefaultTableModel modelData = (DefaultTableModel) table1.getModel();
     private JButton buttonUp;
     private JButton btnCleanTable;
     private JButton buttonFromCollection;
     private JCheckBox checkBoxTrap;
     private JCheckBox checkBoxSimpson;
+    private JButton buttonDownload;
     int num = 0;
     int realRow;
     int realColumn;
@@ -37,6 +46,7 @@ public class Form extends JDialog {
         flagSave=false;
         //contentPane.add(table1);
         setContentPane(contentPane);
+        createMenuBar();
         createTable();
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
@@ -80,6 +90,7 @@ public class Form extends JDialog {
                 SelFlagSimpson();
             }
         });
+
         //добавление в таблицу
         ButtonAdd.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -126,7 +137,7 @@ public class Form extends JDialog {
         });
         buttonFromCollection.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-             for(int i=0;i<num;i++) {
+                for(int i=0;i< dataNumbers.size();i++) {
                  modelData.addRow(dataNumbers.get(i).addMod());
              }
             }});
@@ -330,7 +341,193 @@ public class Form extends JDialog {
 
     }
 
+    private void createMenuBar() {
 
+        var menuBar = new JMenuBar();
+
+        var iconOpen = new ImageIcon("src/resources/open.png");
+        var iconSave = new ImageIcon("src/resources/save.png");
+
+        var exitIcon = new ImageIcon("src/resources/exit.png");
+
+        var fileMenu = new JMenu("Меню");
+        fileMenu.setMnemonic(KeyEvent.VK_F);
+
+        var eMenuItem = new JMenuItem("Выход", exitIcon);
+        var openMenuItem = new JMenuItem("Открыть", iconOpen);
+        var saveMenuItem = new JMenuItem("Сохранить", iconSave);
+        var saveMenuItemInF = new JMenuItem("Сохранить в формате", iconSave);
+        var openBinMenuItem = new JMenuItem("Открыть бинарный файл", iconOpen);
+        var saveBinMenuItem = new JMenuItem("Сохранить бинарный файл", iconSave);
+        eMenuItem.setMnemonic(KeyEvent.VK_E);
+        eMenuItem.setToolTipText("Exit application");
+        eMenuItem.addActionListener((event) -> System.exit(0));
+
+        fileMenu.add(eMenuItem);
+        fileMenu.add(openMenuItem);
+        fileMenu.add(saveMenuItem);
+        fileMenu.add(saveMenuItemInF);
+        fileMenu.add(openBinMenuItem);
+        fileMenu.add(saveBinMenuItem);
+        menuBar.add(fileMenu);
+        setJMenuBar(menuBar);
+
+        saveBinMenuItem.addActionListener(new ActionListener() {    ///////////////////// сохранить бинарный файл
+            public void actionPerformed(ActionEvent e) {
+                FileNameExtensionFilter filter = new FileNameExtensionFilter("Data List Object Type", "dlot");
+                chooser.setFileFilter(filter);
+                int choice = chooser.showSaveDialog(chooser);
+                //if (choice != JFileChooser.APPROVE_OPTION) return;
+                chosenFile = chooser.getSelectedFile();
+
+                savebinFile();
+
+            }
+        });
+        openBinMenuItem.addActionListener(new ActionListener() {   ///////////////////// открыть бинарный файл
+            public void actionPerformed(ActionEvent e) {
+                FileNameExtensionFilter filter = new FileNameExtensionFilter("Data List Object Type", "dlot");
+                chooser.setFileFilter(filter);
+                int choice = chooser.showOpenDialog(chooser);
+                if (choice != JFileChooser.APPROVE_OPTION) return;
+                chosenFile = chooser.getSelectedFile();
+                loadbinFile();
+
+
+            }
+        });
+        saveMenuItem.addActionListener(new ActionListener() {    ///////////////////// сохранить  файл
+            public void actionPerformed(ActionEvent e) {
+                int choice = chooser.showSaveDialog(chooser);
+                //if (choice != JFileChooser.APPROVE_OPTION) return;
+                chosenFile = chooser.getSelectedFile();
+                try {
+                    saveFileToApi();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+            }
+        });
+        saveMenuItemInF.addActionListener(new ActionListener() {    ///////////////////// сохранить  файл
+            public void actionPerformed(ActionEvent e) {
+                int choice = chooser.showSaveDialog(chooser);
+                //if (choice != JFileChooser.APPROVE_OPTION) return;
+                chosenFile = chooser.getSelectedFile();
+                try {
+                    saveFile();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+            }
+        });
+        openMenuItem.addActionListener(new ActionListener() {    ///////////////////// сохранить  файл
+            public void actionPerformed(ActionEvent e) {
+                FileNameExtensionFilter filter = new FileNameExtensionFilter("text", "txt");
+                chooser.setFileFilter(filter);
+                int choice = chooser.showOpenDialog(chooser);
+                if (choice != JFileChooser.APPROVE_OPTION) return;
+                chosenFile = chooser.getSelectedFile();
+                try {
+                    loadFile();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                } catch (NumberFormatException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+    } public void savebinFile(){
+
+        try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(chosenFile)))
+        {
+       //     oos.writeObject(dataListObject);
+            System.out.println("File has been written");
+        }
+        catch(Exception ex){
+
+            System.out.println(ex.getMessage());
+        }
+
+
+    }
+    public void loadbinFile() {
+
+        try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream(chosenFile)))
+        {
+
+         //   dataListObject=((ArrayList<DataNumber>)ois.readObject());
+        }
+        catch(Exception ex){
+
+            System.out.println(ex.getMessage());
+        }
+     //   заполнитьButton();
+    }
+    public void saveFile() throws IOException {
+        int countData = dataNumbers.size();
+
+        FileWriter myfile = new FileWriter(chosenFile);
+
+        for(int i=0;i<countData;i++) {
+            myfile.write(dataNumbers.get(i).toString() + "\n");
+        }
+        myfile.flush();
+        myfile.close();
+    }
+    public void saveFileToApi() throws IOException {
+        int countData = dataNumbers.size();
+
+        FileWriter myfile = new FileWriter(chosenFile);
+
+        for(int i=0;i<countData;i++) {
+            myfile.write(dataNumbers.get(i).toStringApi() + "\n");
+        }
+        myfile.flush();
+        myfile.close();
+    }
+    public void loadFile() throws IOException, NumberFormatException {
+        FileReader myfile = new FileReader(chosenFile);
+        BufferedReader reader = new BufferedReader(myfile);
+        int i=0;
+        dataNumbers.add(i, new DataNumber());
+        String line = reader.readLine();
+
+        String[] dblArray = line.split(",");
+
+        dataNumbers.get(0).setMin(Double.valueOf(dblArray[0]));
+        dataNumbers.get(0).setMax(Double.valueOf(dblArray[1]));
+        dataNumbers.get(0).setStep(Double.valueOf(dblArray[2]));
+        dataNumbers.get(0).setResult(Double.valueOf(dblArray[3]));
+        dataNumbers.get(0).setMethod(dblArray[4]);
+
+        while (line != null) {
+            // считываем остальные строки в цикле
+            i++;
+            line = reader.readLine();
+            if(line==null)break;
+            dblArray = line.split(",");
+            dataNumbers.add(i, new DataNumber());
+            dataNumbers.get(i).setMin(Double.valueOf(dblArray[0]));
+            dataNumbers.get(i).setMax(Double.valueOf(dblArray[1]));
+            dataNumbers.get(i).setStep(Double.valueOf(dblArray[2]));
+            dataNumbers.get(i).setResult(Double.valueOf(dblArray[3]));
+            dataNumbers.get(i).setMethod(dblArray[4]);
+
+        }
+       // for(int k=0;i< dataNumbers.size();k++) {
+          //  modelData.addRow(dataNumbers.get(k).addMod());
+       // }
+        AddInCollection();
+
+    }
+   private void AddInCollection()
+   {
+       for(int k=0;k< dataNumbers.size();k++) {
+           modelData.addRow(dataNumbers.get(k).addMod());
+       }
+   }
     private void onOK() {
         // add your code here
         dispose();

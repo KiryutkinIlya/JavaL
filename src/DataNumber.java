@@ -178,7 +178,20 @@ public class DataNumber {
         //}
         return result;
     }
-    public double Simpson(double a,double b, double n){
+
+    public void setResult(double result) {
+        Result = result;
+    }
+
+    public String getMethod() {
+        return Method;
+    }
+
+    public void setMethod(String method) {
+        Method = method;
+    }
+
+    public double Simpson(double a, double b, double n){
         int i,z;
         double h,s;
 
@@ -197,6 +210,7 @@ public class DataNumber {
     {
         return Math.sin(Math.pow(x,2));
     }
+
     @Override
     public String toString() {
         return "DataNumber{" +
@@ -204,6 +218,10 @@ public class DataNumber {
                 ", Max=" + Max +
                 ", Step=" + Step +
                 ", Result=" + Result +
+                ", Method='" + Method + '\'' +
                 '}';
+    }
+    public String toStringApi() {
+        return Min+","+Max+","+Step+","+Result+","+Method;
     }
 }
