@@ -83,7 +83,8 @@ public class DataNumber {
         if(Min>Max)
         {
             setResultNull();
-        }else {
+        };
+
         if(method==0)
         {
             setResultTrap();
@@ -95,7 +96,7 @@ public class DataNumber {
             setResultNull();
             Method="";
         }}
-        }
+
     }
     public static String getSimpson() {
         return Simpson;
@@ -150,8 +151,8 @@ public class DataNumber {
     }
     public Object[] addMod() {
         Object[] temp=new Object[5];
-        temp[0]=Min;
-        temp[1]=Max;
+        temp[1]=Min;
+        temp[0]=Max;
         temp[2]=Step;
         temp[3]=Result;
         temp[4]=Method;
