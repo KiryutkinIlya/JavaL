@@ -114,8 +114,7 @@ public class DataNumber implements Serializable {
         Trap = trap;
     }
 
-    public void setAllFieldSimpson(double a, double b, double step)
-    {
+    public void setAllFieldSimpson(double a, double b, double step) throws InterruptedException {
         Min = a;
         Max = b;
         Step = step;
@@ -132,8 +131,7 @@ public class DataNumber implements Serializable {
         Result =  Trap(Min,Max,Step);
     }
 
-    public void setResultSimpson()
-    {
+    public void setResultSimpson() throws InterruptedException {
         Result=Simpson(Min,Max,Step);
     }
     public void setResultNull() {
@@ -166,10 +164,8 @@ public class DataNumber implements Serializable {
         int chunkSize = n / 7; // Размер частей
         Thread[] threads = new Thread[7];
         for (int i = 0; i < 7; i++) {
-
             int startIndex = i * chunkSize +1;
             int endIndex = (i +1) * chunkSize;
-
             if (i == 6) {
                 endIndex = n;
             }
@@ -201,6 +197,51 @@ public class DataNumber implements Serializable {
         }
         return h*result[0];
     }
+    public double Simpson(double a, double b, double n)throws InterruptedException{
+        final double[] result = {0};
+        //int i,
+        int z;
+        double h,s;
+        n=n+n;
+        s = InFunction(a)*InFunction(b);
+        h = (b-a)/n;
+        z = 4;
+        int chunkSize = (int)n / 7; // Размер частей
+        Thread[] threads = new Thread[7];
+        for (int k = 0; k < 7; k++) {
+            int startIndex = k * chunkSize +1;
+            int endIndex = (k +1) * chunkSize;
+            if (k == 6) {
+                endIndex = (int)n;
+            }
+            int finalEndIndex = endIndex;
+            //////////////////////////////////////////////////////////////////
+            Runnable task = new Runnable() {
+                public void run() {
+                    double localResult = 0;
+                        for(int i = startIndex; i<finalEndIndex; i++){
+                         localResult =localResult + InFunction(a+i*h);
+                            //z = 6 - z;
+                     }
+                    synchronized(this) {
+                        result[0] += localResult;
+                    }
+                }
+            };
+            ////////////////////////////////////////////////////////////////
+            threads[k] = new Thread(task);
+            threads[k].start();
+            // threads[i].join();
+        }
+        for (Thread thread : threads) {
+            try {
+                thread.join(); // Ждём завершения всех потоков
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return (result[0] * h)/3;
+    }
 
     public void setResult(double result) {
         Result = result;
@@ -214,21 +255,6 @@ public class DataNumber implements Serializable {
         Method = method;
     }
 
-    public double Simpson(double a, double b, double n){
-        int i,z;
-        double h,s;
-
-        n=n+n;
-        s = InFunction(a)*InFunction(b);
-        h = (b-a)/n;
-        z = 4;
-
-        for(i = 1; i<n; i++){
-            s = s + z * InFunction(a+i*h);
-            z = 6 - z;
-        }
-        return (s * h)/3;
-    }
     public static double InFunction(double x) //Подынтегральная функция
     {
         return Math.sin(Math.pow(x,2));
