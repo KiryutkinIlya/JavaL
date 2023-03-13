@@ -102,7 +102,7 @@ public class Form extends JDialog {
                 }catch (InExceptions ex)
                 {
                     throw new RuntimeException(ex);
-                } catch (InterruptedException ex) {
+                } catch (InterruptedException | IOException ex) {
                     throw new RuntimeException(ex);
                 }
             }
@@ -251,13 +251,15 @@ public class Form extends JDialog {
         }
 
     }
-    private void AddTable() throws InExceptions, InterruptedException {
+    private void AddTable() throws InExceptions, InterruptedException, IOException {
         DataNumber dataNumber=new DataNumber();
         if(textField1.getText().equals(""))
         {
             throw new InExceptions();
         }
         dataNumber.setAllField(Double.valueOf(textField1.getText()),Double.valueOf(textField2.getText()),Double.valueOf(textField3.getText()),NumberMethod());
+
+        dataNumber.runServer(NumberMethod());
         dataNumbers.add(dataNumber);
         modelData.addRow(dataNumbers.get(num).addMod());
         num++;

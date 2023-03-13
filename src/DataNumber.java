@@ -1,4 +1,8 @@
+import java.io.IOException;
 import java.io.Serializable;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 
 public class DataNumber implements Serializable {
     private double Min;
@@ -34,7 +38,7 @@ public class DataNumber implements Serializable {
         Min = temp[0];
         Max = temp[1];
         Step = temp[2];
-        Result = Trap(temp[0],temp[1],temp[2]);
+       // Result = Trap(temp[0],temp[1],temp[2]);
         Method=Trap;
 
     }
@@ -127,12 +131,11 @@ public class DataNumber implements Serializable {
     }
 
     public void setResultTrap() throws InterruptedException {
-
-        Result =  Trap(Min,Max,Step);
+     //   Result =  Trap(Min,Max,Step);
     }
 
     public void setResultSimpson() throws InterruptedException {
-        Result=Simpson(Min,Max,Step);
+        //Result=Simpson(Min,Max,Step);
     }
     public void setResultNull() {
         Result =  0;
@@ -156,7 +159,7 @@ public class DataNumber implements Serializable {
         temp[4]=Method;
         return temp;
     }
-
+/*
     public double Trap(double a,double b, double h) throws InterruptedException {
         final double[] result = {0};
         int n = (int)((a-h- b) / h);
@@ -242,7 +245,7 @@ public class DataNumber implements Serializable {
         }
         return (result[0] * h)/3;
     }
-
+ */
     public void setResult(double result) {
         Result = result;
     }
@@ -274,5 +277,28 @@ public class DataNumber implements Serializable {
     }
     public String toStringApi() {
         return Min+","+Max+","+Step+","+Result+","+Method;
+    }
+    public void SendData(int numberMethod) throws IOException {
+        DatagramSocket socket = new DatagramSocket();
+        byte[] data = (getMin()+","+getMax()+","+getStep()+","+numberMethod).getBytes();
+        InetAddress serverAddress = InetAddress.getByName("127.0.0.1");
+        int serverPort = 12345;
+        DatagramPacket packet = new DatagramPacket(data, data.length, serverAddress, serverPort);
+        socket.send(packet);
+        socket.close();
+    }
+    public double ReadData() throws IOException {
+        DatagramSocket socket = new DatagramSocket(12346);
+        byte[] buffer = new byte[1024];
+        DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+        socket.receive(packet);
+        String message = new String(packet.getData(), 0, packet.getLength());
+        String response = new String(message);
+        socket.close();
+        return Double.valueOf(response);
+    }
+    public void runServer(int numberMethod) throws IOException, InterruptedException {
+        SendData(numberMethod);
+        setResult(ReadData());
     }
 }
