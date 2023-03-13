@@ -102,6 +102,8 @@ public class Form extends JDialog {
                 }catch (InExceptions ex)
                 {
                     throw new RuntimeException(ex);
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
                 }
             }
         });
@@ -249,7 +251,7 @@ public class Form extends JDialog {
         }
 
     }
-    private void AddTable() throws InExceptions {
+    private void AddTable() throws InExceptions, InterruptedException {
         DataNumber dataNumber=new DataNumber();
         if(textField1.getText().equals(""))
         {
@@ -372,7 +374,7 @@ public class Form extends JDialog {
         menuBar.add(fileMenu);
         setJMenuBar(menuBar);
 
-        saveBinMenuItem.addActionListener(new ActionListener() {  
+        saveBinMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 FileNameExtensionFilter filter = new FileNameExtensionFilter("Data List Object Type", "dlot");
                 chooser.setFileFilter(filter);

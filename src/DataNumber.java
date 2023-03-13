@@ -29,7 +29,7 @@ public class DataNumber implements Serializable {
         this.Result =dataNumber.Result;
         this.Method= dataNumber.Method;
     }
-    public DataNumber(double[] temp) {
+    public DataNumber(double[] temp) throws InterruptedException {
 
         Min = temp[0];
         Max = temp[1];
@@ -65,8 +65,7 @@ public class DataNumber implements Serializable {
     public void setStep(double step) {
         Step = step;
     }
-   public void setAllFieldTrap(double a, double b,double step)
-   {
+   public void setAllFieldTrap(double a, double b,double step) throws InterruptedException {
        Min = a;
        Max = b;
        Step = step;
@@ -77,8 +76,7 @@ public class DataNumber implements Serializable {
            setResultTrap();
        }
    }
-    public void setAllField(double a, double b,double step,int method)
-    {
+    public void setAllField(double a, double b,double step,int method) throws InterruptedException {
         Min = a;
         Max = b;
         Step = step;
@@ -129,7 +127,7 @@ public class DataNumber implements Serializable {
         }
     }
 
-    public void setResultTrap() {
+    public void setResultTrap() throws InterruptedException {
 
         Result =  Trap(Min,Max,Step);
     }
@@ -160,25 +158,48 @@ public class DataNumber implements Serializable {
         temp[4]=Method;
         return temp;
     }
-    public double Trap(double a,double b, double h){
-        double result=0;
-        double num=0;
-        for(double i=a;i<=b-(h*2);i+=h)
-        {num=i+h;
-            if(i>b)
-            {
-                num=b;
+
+    public double Trap(double a,double b, double h) throws InterruptedException {
+        final double[] result = {0};
+        int n = (int)((a-h- b) / h);
+        result[0] += (InFunction(a) + InFunction(b)) / 2;
+        int chunkSize = n / 7; // Размер частей
+        Thread[] threads = new Thread[7];
+        for (int i = 0; i < 7; i++) {
+
+            int startIndex = i * chunkSize +1;
+            int endIndex = (i +1) * chunkSize;
+
+            if (i == 6) {
+                endIndex = n;
             }
-            result+=(InFunction(i)+InFunction(num))*(b-i)/2;
+            int finalEndIndex = endIndex;
+            //////////////////////////////////////////////////////////////////
+            Runnable task = new Runnable() {
+                public void run() {
+                    double localResult = 0;
+                    for (int j = startIndex; j <= finalEndIndex; j++) {
+                        localResult += InFunction(a + h * j);
+                    }
+
+                    synchronized(this) {
+                        result[0] += localResult;
+                    }
+                }
+            };
+            ////////////////////////////////////////////////////////////////
+            threads[i] = new Thread(task);
+            threads[i].start();
+            // threads[i].join();
         }
-        //double result=0;
-        // int n = (int)((a-b)/h);
-        //result += (InFunction(a)+InFunction(b))/2;
-        //for(int i = 1; i < n; i++) {
-        //    result += InFunction(b + h * i);
-        //}
-        //}
-        return result;
+        for (Thread thread : threads) {
+            try {
+                thread.join(); // Ждём завершения всех потоков
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return h*result[0];
     }
 
     public void setResult(double result) {
@@ -212,7 +233,9 @@ public class DataNumber implements Serializable {
     {
         return Math.sin(Math.pow(x,2));
     }
-
+    public void run() {
+        System.out.println("Thread LoaderDoc run!");
+    }
     @Override
     public String toString() {
         return "DataNumber{" +
