@@ -5,3 +5,21 @@
 .idea/vcs.xml
 out
 
+serv/serv/.idea/encodings.xml
+serv/serv/.idea/jarRepositories.xml
+serv/serv/.idea/misc.xml
+serv/serv/.idea/vcs.xml
+serv/serv/.idea/workspace.xml
+serv/serv/target/classes/Main.class
+serv/serv/target/classes/Server$1.class
+serv/serv/target/classes/Server.class
+serv/.idea/.gitignore
+serv/.idea/compiler.xml
+serv/.idea/encodings.xml
+serv/.idea/jarRepositories.xml
+serv/.idea/misc.xml
+serv/.idea/modules.xml
+serv/.idea/serv.iml
+serv/.idea/vcs.xml
+serv/serv/serv.iml
+serv/serv/.idea/compiler.xml
